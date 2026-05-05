@@ -27,7 +27,8 @@ class NasabahLoginController extends Controller
             $supabaseUrl = env('SUPABASE_URL');
             $supabaseKey = env('SUPABASE_KEY');
             
-            $query = "nasabah?select=*&or=(username.eq." . urlencode($username) . ",email.eq." . urlencode($username) . ")&status_akun=eq.aktif";
+            // Sesuaikan dengan kolom tabel Supabase: `user_name`, `email`, `status`
+            $query = "nasabah?select=*&or=(user_name.eq." . urlencode($username) . ",email.eq." . urlencode($username) . ")&status=eq.aktif";
             
             $response = Http::withHeaders([
                 'apikey' => $supabaseKey,
@@ -39,25 +40,25 @@ class NasabahLoginController extends Controller
             if (is_array($users) && count($users) > 0) {
                 $user = $users[0];
 
-                // Verifikasi password dengan metode Android
+                // Verifikasi password dengan metode Android (jika ada salt)
                 $loginSuccess = $this->verifyPasswordLikeAndroid($password, $user['password'], $user['salt'] ?? null);
 
-                // Fallback untuk user lama (plain password atau password_hash)
-                if (!$loginSuccess && isset($user['salt'])) {
-                    if (password_verify($password, $user['password'])) {
+                // Fallback untuk user lama atau jika tabel tidak menyimpan salt: coba password_verify dan plain compare
+                if (!$loginSuccess) {
+                    if (isset($user['password']) && password_verify($password, $user['password'])) {
                         $loginSuccess = true;
-                    } elseif ($password === $user['password']) {
+                    } elseif (isset($user['password']) && $password === $user['password']) {
                         $loginSuccess = true;
                     }
                 }
 
                 if ($loginSuccess) {
-                    // Set session
+                    // Set session (samakan dengan kolom tabel: `nama_lengkap`, `user_name`)
                     session([
                         'id_nasabah' => $user['id_nasabah'],
-                        'nama_nasabah' => $user['nama_nasabah'],
-                        'username' => $user['username'],
-                        'email' => $user['email'],
+                        'nama_nasabah' => $user['nama_lengkap'] ?? ($user['nama_nasabah'] ?? null),
+                        'username' => $user['user_name'] ?? ($user['username'] ?? null),
+                        'email' => $user['email'] ?? null,
                         'saldo' => $user['saldo'] ?? 0,
                     ]);
 

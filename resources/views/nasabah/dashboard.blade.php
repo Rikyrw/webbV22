@@ -357,6 +357,26 @@
                     @else
                         <ul class="transaction-list">
                             @foreach ($recent_setor as $rs)
+                                @php
+                                    // Ensure $rs is an array (Supabase responses may sometimes be JSON strings)
+                                    if (!is_array($rs)) {
+                                        $decoded = json_decode($rs, true);
+                                        if (is_array($decoded)) {
+                                            $rs = $decoded;
+                                        } else {
+                                            // fallback: create minimal structure to avoid errors
+                                            $rs = [
+                                                'id_transaksi' => (string)$rs,
+                                                'total_berat' => 0,
+                                                'total_nilai' => 0,
+                                                'tanggal_setor' => null,
+                                                'status' => null,
+                                            ];
+                                        }
+                                    }
+                                    $dateVal = $rs['tanggal_setor'] ?? $rs['created_at'] ?? null;
+                                    $statusVal = $rs['status'] ?? null;
+                                @endphp
                                 <li class="transaction-item">
                                     <div class="transaction-info">
                                         <div class="id">ID: {{ htmlspecialchars($rs['id_transaksi'] ?? '-') }}</div>
@@ -364,9 +384,9 @@
                                         <div class="desc">Nilai: Rp {{ number_format((float)($rs['total_nilai'] ?? 0), 0, ',', '.') }}</div>
                                     </div>
                                     <div class="transaction-right">
-                                        <div class="date">{{ $rs['tanggal_setor'] ? \Carbon\Carbon::parse($rs['tanggal_setor'])->format('d M Y') : '-' }}</div>
-                                        <div class="badge badge-{{ strtolower($rs['status'] ?? 'pending') == 'selesai' ? 'success' : 'pending' }}">
-                                            {{ ucfirst($rs['status'] ?? 'menunggu') }}
+                                        <div class="date">{{ $dateVal ? \Carbon\Carbon::parse($dateVal)->format('d M Y') : '-' }}</div>
+                                        <div class="badge badge-{{ strtolower($statusVal ?? 'pending') == 'selesai' ? 'success' : 'pending' }}">
+                                            {{ ucfirst($statusVal ?? 'menunggu') }}
                                         </div>
                                     </div>
                                 </li>
@@ -383,6 +403,17 @@
                     @else
                         <ul class="transaction-list">
                             @foreach ($recent_ppob as $it)
+                                @php
+                                    if (!is_array($it)) {
+                                        $decoded = json_decode($it, true);
+                                        if (is_array($decoded)) {
+                                            $it = $decoded;
+                                        } else {
+                                            $it = ['service' => (string)$it, 'deskripsi' => '', 'amount' => 0, 'created_at' => null];
+                                        }
+                                    }
+                                    $createdVal = $it['created_at'] ?? $it['tanggal_pengajuan'] ?? null;
+                                @endphp
                                 <li class="transaction-item">
                                     <div class="transaction-info">
                                         <div class="title">{{ htmlspecialchars($it['service'] ?? '-') }}</div>
@@ -390,7 +421,7 @@
                                     </div>
                                     <div class="transaction-right">
                                         <div class="amount">Rp {{ number_format((float)($it['amount'] ?? 0), 0, ',', '.') }}</div>
-                                        <div class="date">{{ $it['created_at'] ? \Carbon\Carbon::parse($it['created_at'])->format('d M Y') : '-' }}</div>
+                                        <div class="date">{{ $createdVal ? \Carbon\Carbon::parse($createdVal)->format('d M Y') : '-' }}</div>
                                     </div>
                                 </li>
                             @endforeach

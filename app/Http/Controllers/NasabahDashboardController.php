@@ -27,10 +27,10 @@ class NasabahDashboardController extends Controller
             if (is_array($userData) && count($userData) > 0) {
                 $user = $userData[0];
                 session([
-                    'nama_nasabah' => $user['nama_nasabah'] ?? 'User',
+                    'nama_nasabah' => $user['nama_lengkap'] ?? ($user['nama_nasabah'] ?? 'User'),
                     'saldo' => $user['saldo'] ?? 0,
                 ]);
-                $user_name = $user['nama_nasabah'] ?? 'User';
+                $user_name = $user['nama_lengkap'] ?? ($user['nama_nasabah'] ?? 'User');
             }
         } catch (\Exception $e) {
             \Log::error('Dashboard user fetch error: ' . $e->getMessage());
