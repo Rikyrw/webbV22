@@ -130,11 +130,16 @@ class NasabahProfilController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
+            'username' => ['required', 'string', 'min:3', 'max:50', 'regex:/^[A-Za-z0-9_]+$/'],
             'nama_nasabah' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'no_hp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string|max:500',
         ], [
+            'username.required' => 'Username harus diisi',
+            'username.min' => 'Username minimal 3 karakter',
+            'username.max' => 'Username maksimal 50 karakter',
+            'username.regex' => 'Username hanya boleh berisi huruf, angka, dan underscore',
             'nama_nasabah.required' => 'Nama lengkap harus diisi',
             'nama_nasabah.max' => 'Nama lengkap tidak boleh lebih dari 255 karakter',
             'email.required' => 'Email harus diisi',
@@ -154,7 +159,29 @@ class NasabahProfilController extends Controller
             $supabaseKey = env('SUPABASE_KEY');
             $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY') ?: $supabaseKey;
 
+            // Normalize username
+            $username = trim($validated['username']);
+
+            // Check uniqueness of username (exclude current user)
+            try {
+                $checkResp = Http::withHeaders([
+                    'apikey' => $supabaseKey,
+                    'Authorization' => 'Bearer ' . $supabaseKey,
+                ])->get($supabaseUrl . '/rest/v1/nasabah?select=id_nasabah&user_name=eq.' . urlencode($username));
+
+                $checkData = $checkResp->json();
+                if (is_array($checkData) && count($checkData) > 0) {
+                    $foundId = $checkData[0]['id_nasabah'] ?? null;
+                    if ($foundId && intval($foundId) !== intval($id)) {
+                        return back()->withInput()->withErrors(['username' => 'Username sudah digunakan oleh pengguna lain']);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Username uniqueness check failed: ' . $e->getMessage());
+            }
+
             $payload = [
+                'user_name' => $username,
                 'nama_lengkap' => $validated['nama_nasabah'],
                 'email' => $validated['email'],
                 'no_hp' => $validated['no_hp'] ?? '',
@@ -180,6 +207,7 @@ class NasabahProfilController extends Controller
                 // Update session with new values
                 session([
                     'nama_nasabah' => $row['nama_lengkap'] ?? $validated['nama_nasabah'],
+                    'username' => $row['user_name'] ?? $username,
                     'email' => $row['email'] ?? $validated['email'],
                     'no_hp' => $row['no_hp'] ?? ($validated['no_hp'] ?? ''),
                     'alamat' => $row['alamat'] ?? ($validated['alamat'] ?? ''),
