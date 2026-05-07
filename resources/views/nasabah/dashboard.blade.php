@@ -293,6 +293,7 @@
                     <p>Selamat datang, {{ htmlspecialchars($user_name ?? 'User') }}! di sistem manajemen bank sampah</p>
                 </div>
             </div>
+            
 
             <!-- TOP CARDS -->
             <div class="grid grid-2">
