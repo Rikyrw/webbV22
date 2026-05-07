@@ -55,13 +55,37 @@
             transform: translateY(-2px);
         }
 
+        .logo-white {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
         /* Hero Section */
         .hero-section {
-            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--primary-green) 100%);
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(27, 67, 50, 0.88) 0%,
+                    rgba(45, 106, 79, 0.82) 100%
+                ),
+                url("{{ asset('images/bg-gunung.png') }}");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
             color: white;
             padding: 100px 0;
             position: relative;
             overflow: hidden;
+        }
+
+        .hero-content,
+        .hero-image {
+            position: relative;
+            z-index: 2;
         }
 
         .hero-section::before {
@@ -86,6 +110,16 @@
             background: rgba(74, 158, 102, 0.1);
             border-radius: 50%;
             animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            transform: translateX(245px);
         }
 
         @keyframes float {
@@ -327,19 +361,25 @@
         .member-img {
             position: relative;
             margin-bottom: 1.5rem;
+            width: 230px;
+            height: 230px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
             overflow: hidden;
-            border-radius: 15px;
+            border: 5px solid #52b788;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .member-img img {
             width: 100%;
-            height: 300px;
+            height: 280px;
             object-fit: cover;
-            transition: transform 0.4s ease;
+            border-radius: 20px;
+            transition: 0.4s ease;
         }
 
         .team-member:hover .member-img img {
-            transform: scale(1.1);
+            transform: scale(1.22) translateY(10px);
         }
 
         .member-info h4 {
@@ -490,7 +530,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#home">
-                <i class="fas fa-leaf"></i> GreenPoint
+                <img src="{{ asset('images/logo.png') }}" alt="GreenPoint Logo" class="logo-white">
+                GreenPoint
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -531,7 +572,10 @@
                 </div>
                 <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000">
                     <div class="hero-image">
-                        <img src="{{ asset('assets/img/tangan1.png') }}" alt="Hero Image" class="img-fluid" style="max-width: 100%; height: auto;">
+                        <img src="{{ asset('images/tangan1.png') }}"
+                            alt="Hero Image"
+                            class="img-fluid"
+                            style="max-width: 110%; height: auto;">
                     </div>
                 </div>
             </div>
@@ -550,7 +594,7 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <img src="{{ asset('assets/img/Recycle.png') }}" alt="Feature 1">
+                            <img src="{{ asset('images/Recycle.png') }}" alt="Feature 1">
                         </div>
                         <h4>Sampah Bernilai</h4>
                         <p>Tukarkan sampah Anda dengan uang tunai atau poin yang dapat ditukar dengan berbagai hadiah menarik!</p>
@@ -560,7 +604,7 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <img src="{{ asset('assets/img/dolar.png') }}" alt="Feature 2">
+                            <img src="{{ asset('images/dolar.png') }}" alt="Feature 2">
                         </div>
                         <h4>Menabung Mudah</h4>
                         <p>Sistem tabungan digital yang fleksibel dengan bunga menarik untuk setiap setoran sampah Anda!</p>
@@ -570,7 +614,7 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <img src="{{ asset('assets/img/daun.png') }}" alt="Feature 3">
+                            <img src="{{ asset('images/daun.png') }}" alt="Feature 3">
                         </div>
                         <h4>Lingkungan Hijau</h4>
                         <p>Bersama kita wujudkan bumi yang lebih bersih dan hijau untuk generasi masa depan!</p>
@@ -702,85 +746,57 @@
 
     <!-- Team Section -->
     <section id="team" class="team-section" data-aos="fade-up">
-        <div class="container">
-            <div class="section-title" data-aos="fade-up" data-aos-duration="800">
-                <h2>Tim Kami</h2>
-                <p>Kenali tim profesional di balik kesuksesan GreenPoint</p>
-            </div>
+        <div class="row justify-content-center g-4">
 
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/ahmad.jpg') }}" alt="Ahmad Zubaeri">
-                        </div>
-                        <div class="member-info">
-                            <h4>Ahmad Zubaeri</h4>
-                            <span>Analis</span>
-                        </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{{ asset('assets/img/team/aditya.jpg') }}" alt="Aditya Fadni">
                     </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/aditya.jpg') }}" alt="Aditya Fadni">
-                        </div>
-                        <div class="member-info">
-                            <h4>Aditya Fadni</h4>
-                            <span>Master & Backend</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/riky.jpg') }}" alt="Riky Rio">
-                        </div>
-                        <div class="member-info">
-                            <h4>Riky Rio</h4>
-                            <span>Frontend & Database</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/fahmi.jpg') }}" alt="Fahmi">
-                        </div>
-                        <div class="member-info">
-                            <h4>Fahmi</h4>
-                            <span>Analis</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/rizki.jpg') }}" alt="Rizki Agung">
-                        </div>
-                        <div class="member-info">
-                            <h4>Rizki Agung</h4>
-                            <span>Backend</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                    <div class="team-member">
-                        <div class="member-img">
-                            <img src="{{ asset('assets/img/team/dhimas.jpg') }}" alt="Dhimas">
-                        </div>
-                        <div class="member-info">
-                            <h4>Dhimas</h4>
-                            <span>UI/UX</span>
-                        </div>
+                    <div class="member-info">
+                        <h4>Aditya Fadni</h4>
+                        <span>Master & Backend</span>
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{{ asset('assets/img/team/riky.jpg') }}" alt="Riky Rio">
+                    </div>
+                    <div class="member-info">
+                        <h4>Riky Rio</h4>
+                        <span>Frontend & Database</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="team-member">
+                    <div class="member-img profile-agung">
+                        <img src="{{ asset('images/agung.jpeg') }}" alt="Rizki Agung">
+                    </div>
+
+                    <div class="member-info">
+                        <h4>Rizki Agung</h4>
+                        <span>Frontend</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="team-member">
+                    <div class="member-img">
+                        <img src="{{ asset('assets/img/team/dhimas.jpg') }}" alt="Dhimas">
+                    </div>
+                    <div class="member-info">
+                        <h4>Dhimas</h4>
+                        <span>UI/UX</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 

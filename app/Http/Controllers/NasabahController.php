@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Nasabah;
 
 class NasabahController extends Controller
 {
@@ -31,7 +32,8 @@ class NasabahController extends Controller
                 }
 
                 if ($newStatus) {
-                    // Use Supabase REST to update nasabah status
+                    // Update nasabah status in database
+                    Nasabah::where('id_nasabah', $id)->update(['status' => $newStatus]);
                     $flash = 'Status nasabah berhasil diperbarui.';
                 } else {
                     $flash = 'Aksi tidak dikenali.';
@@ -45,45 +47,30 @@ class NasabahController extends Controller
             session()->forget('flash_nasabah');
         }
 
-        // Dummy data for now (replace with database calls later)
-        $nasabahs = [
-            [
-                'id_nasabah' => 1,
-                'nama_nasabah' => 'Siti Rahma',
-                'alamat' => 'Jl. Merdeka No. 123, Jakarta',
-                'no_hp' => '08123456789',
-                'saldo' => 1200000,
-                'status_akun' => 'aktif',
-                'tanggal_daftar' => '2024-01-15'
-            ],
-            [
-                'id_nasabah' => 2,
-                'nama_nasabah' => 'Budi Santoso',
-                'alamat' => 'Jl. Sudirman No. 456, Bandung',
-                'no_hp' => '08234567890',
-                'saldo' => 980000,
-                'status_akun' => 'menunggu',
-                'tanggal_daftar' => '2024-02-20'
-            ],
-            [
-                'id_nasabah' => 3,
-                'nama_nasabah' => 'Rahmawati',
-                'alamat' => 'Jl. Ahmad Yani No. 789, Surabaya',
-                'no_hp' => '08345678901',
-                'saldo' => 720000,
-                'status_akun' => 'aktif',
-                'tanggal_daftar' => '2024-03-10'
-            ],
-            [
-                'id_nasabah' => 4,
-                'nama_nasabah' => 'Ahmad Wijaya',
-                'alamat' => 'Jl. Gatot Subroto No. 321, Medan',
-                'no_hp' => '08456789012',
-                'saldo' => 550000,
-                'status_akun' => 'menunggu',
-                'tanggal_daftar' => '2024-04-05'
-            ],
-        ];
+        // Get nasabah data from database
+        $nasabahs = Nasabah::select(
+            'id_nasabah',
+            'nama_lengkap as nama_nasabah',
+            'alamat',
+            'no_hp',
+            'saldo',
+            'status as status_akun',
+            'created_at as tanggal_daftar'
+        )
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($item) {
+            return [
+                'id_nasabah' => $item->id_nasabah,
+                'nama_nasabah' => $item->nama_nasabah,
+                'alamat' => $item->alamat ?? '-',
+                'no_hp' => $item->no_hp ?? '-',
+                'saldo' => $item->saldo ?? 0,
+                'status_akun' => $item->status_akun ?? 'verifikasi',
+                'tanggal_daftar' => $item->tanggal_daftar?->format('Y-m-d') ?? '-',
+            ];
+        })
+        ->toArray();
 
         return view('admin.daftar_nasabah', compact(
             'activePage',

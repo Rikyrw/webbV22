@@ -107,6 +107,13 @@
 .nav::-webkit-scrollbar-thumb:hover {
     background: rgba(255,255,255,0.3);
 }
+
+.logo-white {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
 </style>
 
 @php
@@ -115,11 +122,7 @@
 
 <div class="sidebar">
     <div class="brand">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="8" fill="#10b981"/>
-            <path d="M20 8C20 8 12 14 12 22C12 28 15.6 32 20 32C24.4 32 28 28 28 22C28 14 20 8 20 8Z" fill="white"/>
-            <circle cx="20" cy="22" r="3" fill="#10b981"/>
-        </svg>
+        <img src="{{ asset('images/logo.png') }}" alt="GreenPoint Logo" class="logo-white">
         <h1>GreenPoint</h1>
     </div>
 

@@ -1,86 +1,4 @@
 <aside class="sidebar" role="complementary" aria-label="Sidebar navigation">
-  <!-- Brand -->
-  <div class="brand">
-    <div style="width:32px;height:32px;background:linear-gradient(135deg,#10b981 0%,#059669 100%);border-radius:6px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;">GP</div>
-    <h1>GreenPoint</h1>
-  </div>
-
-  <!-- Navigation -->
-  <nav class="nav" aria-label="Main menu">
-    <a href="{{ url('/admin/dashboard') }}" class="{{ ($activePage == 'dashboard') ? 'active' : '' }}">
-      <i class="i lucide-layout-dashboard"></i><span>Dashboard</span>
-    </a>
-    <a href="{{ url('/admin/nasabah') }}" class="{{ ($activePage == 'nasabah') ? 'active' : '' }}">
-      <i class="i lucide-users"></i><span>Daftar Nasabah</span>
-    </a>
-    
-    <!-- Transaksi with dropdown -->
-    <div class="nav-dropdown" style="position: relative;">
-      <a href="{{ url('/admin/transaksi') }}" class="{{ ($activePage == 'transaksi') ? 'active' : '' }}" style="display: flex; align-items: center; justify-content: space-between;">
-        <span style="display: flex; align-items: center; gap: 12px; flex: 1;">
-          <i class="i lucide-repeat"></i><span>Transaksi</span>
-        </span>
-        <i class="i lucide-chevron-down" style="width: 16px; height: 16px; transform: rotate(0deg); transition: transform 0.2s;"></i>
-      </a>
-      <div class="nav-submenu" style="display: none; background: rgba(255,255,255,0.05); border-radius: 6px; margin-top: 4px; overflow: hidden;">
-        <a href="{{ url('/admin/transaksi?tab=setor') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
-          <i class="lucide-arrow-down-to-line" style="width: 14px; height: 14px;"></i>Permintaan Setor Sampah
-        </a>
-        <a href="{{ url('/admin/transaksi?tab=penarikan') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
-          <i class="lucide-arrow-up-to-line" style="width: 14px; height: 14px;"></i>Permintaan Penarikan
-        </a>
-        <a href="{{ url('/admin/transaksi?tab=history') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
-          <i class="lucide-history" style="width: 14px; height: 14px;"></i>Riwayat Penarikan & Setor
-        </a>
-      </div>
-    </div>
-
-    <a href="{{ url('/admin/sampah') }}" class="{{ ($activePage == 'sampah') ? 'active' : '' }}">
-      <i class="i lucide-trash-2"></i><span>Daftar Sampah</span>
-    </a>
-    <a href="{{ url('/admin/laporan') }}" class="{{ ($activePage == 'laporan') ? 'active' : '' }}">
-      <i class="i lucide-file-chart-column"></i><span>Laporan</span>
-    </a>
-    
-    @if (auth()->check() && auth()->user()->role === 'superadmin')
-    <a href="{{ url('/admin/pengaturan') }}" class="{{ ($activePage == 'pengaturan') ? 'active' : '' }}">
-      <i class="i lucide-settings"></i><span>Pengaturan Admin</span>
-    </a>
-    @endif
-  </nav>
-
-  <!-- User Footer -->
-  <div class="user" role="contentinfo">
-    <div class="avatar-dropdown">
-      <div class="avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->role ?? 'AD', 0, 2)) : 'AD' }}</div>
-      <div class="user-info">
-        <span class="role">{{ auth()->check() ? ucfirst(auth()->user()->role) : 'Admin' }}</span>
-        <span class="name">{{ auth()->check() ? auth()->user()->name : 'Admin' }}</span>
-      </div>
-      <button class="logout-btn" onclick="logout()" title="Logout">
-        <i class="lucide-log-out"></i>
-      </button>
-    </div>
-    
-    <!-- Dropdown menu (hidden by default) -->
-    <div class="user-dropdown" id="userDropdown">
-      <div class="dropdown-item">
-        <i class="lucide-user"></i>
-        <span>{{ auth()->check() ? auth()->user()->email : 'admin@greenpoint.com' }}</span>
-      </div>
-      <div class="dropdown-item">
-        <i class="lucide-shield"></i>
-        <span>Role: {{ auth()->check() ? ucfirst(auth()->user()->role) : 'Admin' }}</span>
-      </div>
-      <div class="dropdown-divider"></div>
-      <a href="{{ url('/admin/logout') }}" class="dropdown-item logout-item" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-        <i class="lucide-log-out"></i>
-        <span>Keluar</span>
-      </a>
-    </div>
-  </div>
-</aside>
-
 <style>
 .user {
   position: relative;
@@ -231,7 +149,98 @@
     width: auto;
   }
 }
-</style>
+
+.logo-white {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+</style>  
+
+<!-- Brand -->
+  <div class="brand">
+    <img src="{{ asset('images/logo.png') }}" alt="GreenPoint Logo" style="logo-white">
+    <h1>GreenPoint</h1>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Main menu">
+    <a href="{{ url('/admin/dashboard') }}" class="{{ ($activePage == 'dashboard') ? 'active' : '' }}">
+      <i class="i lucide-layout-dashboard"></i><span>Dashboard</span>
+    </a>
+    <a href="{{ url('/admin/nasabah') }}" class="{{ ($activePage == 'nasabah') ? 'active' : '' }}">
+      <i class="i lucide-users"></i><span>Daftar Nasabah</span>
+    </a>
+    
+    <!-- Transaksi with dropdown -->
+    <div class="nav-dropdown" style="position: relative;">
+      <a href="{{ url('/admin/transaksi') }}" class="{{ ($activePage == 'transaksi') ? 'active' : '' }}" style="display: flex; align-items: center; justify-content: space-between;">
+        <span style="display: flex; align-items: center; gap: 12px; flex: 1;">
+          <i class="i lucide-repeat"></i><span>Transaksi</span>
+        </span>
+        <i class="i lucide-chevron-down" style="width: 16px; height: 16px; transform: rotate(0deg); transition: transform 0.2s;"></i>
+      </a>
+      <div class="nav-submenu" style="display: none; background: rgba(255,255,255,0.05); border-radius: 6px; margin-top: 4px; overflow: hidden;">
+        <a href="{{ url('/admin/transaksi?tab=setor') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
+          <i class="lucide-arrow-down-to-line" style="width: 14px; height: 14px;"></i>Permintaan Setor Sampah
+        </a>
+        <a href="{{ url('/admin/transaksi?tab=penarikan') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
+          <i class="lucide-arrow-up-to-line" style="width: 14px; height: 14px;"></i>Permintaan Penarikan
+        </a>
+        <a href="{{ url('/admin/transaksi?tab=history') }}" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; margin-left: 16px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; border-radius: 6px; transition: all 0.2s;">
+          <i class="lucide-history" style="width: 14px; height: 14px;"></i>Riwayat Penarikan & Setor
+        </a>
+      </div>
+    </div>
+
+    <a href="{{ url('/admin/sampah') }}" class="{{ ($activePage == 'sampah') ? 'active' : '' }}">
+      <i class="i lucide-trash-2"></i><span>Daftar Sampah</span>
+    </a>
+    <a href="{{ url('/admin/laporan') }}" class="{{ ($activePage == 'laporan') ? 'active' : '' }}">
+      <i class="i lucide-file-chart-column"></i><span>Laporan</span>
+    </a>
+    
+    @if (auth()->check() && auth()->user()->role === 'superadmin')
+    <a href="{{ url('/admin/pengaturan') }}" class="{{ ($activePage == 'pengaturan') ? 'active' : '' }}">
+      <i class="i lucide-settings"></i><span>Pengaturan Admin</span>
+    </a>
+    @endif
+  </nav>
+
+  <!-- User Footer -->
+  <div class="user" role="contentinfo">
+    <div class="avatar-dropdown">
+      <div class="avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->role ?? 'AD', 0, 2)) : 'AD' }}</div>
+      <div class="user-info">
+        <span class="role">{{ auth()->check() ? ucfirst(auth()->user()->role) : 'Admin' }}</span>
+        <span class="name">{{ auth()->check() ? auth()->user()->name : 'Admin' }}</span>
+      </div>
+      <button class="logout-btn" onclick="logout()" title="Logout">
+        <i class="lucide-log-out"></i>
+      </button>
+    </div>
+    
+    <!-- Dropdown menu (hidden by default) -->
+    <div class="user-dropdown" id="userDropdown">
+      <div class="dropdown-item">
+        <i class="lucide-user"></i>
+        <span>{{ auth()->check() ? auth()->user()->email : 'admin@greenpoint.com' }}</span>
+      </div>
+      <div class="dropdown-item">
+        <i class="lucide-shield"></i>
+        <span>Role: {{ auth()->check() ? ucfirst(auth()->user()->role) : 'Admin' }}</span>
+      </div>
+      <div class="dropdown-divider"></div>
+      <a href="{{ url('/admin/logout') }}" class="dropdown-item logout-item" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+        <i class="lucide-log-out"></i>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </div>
+</aside>
+
+
 
 <script>
 function logout() {

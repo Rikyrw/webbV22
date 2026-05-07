@@ -52,6 +52,12 @@ Route::post('/admin/sampah', [SampahController::class, 'daftar'])->name('admin.s
 
 // Admin laporan routes
 Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
+Route::get('/admin/laporan/excel/keuangan', [LaporanController::class, 'excelKeuangan'])->name('admin.laporan.excel.keuangan');
+Route::get('/admin/laporan/pdf/keuangan', [LaporanController::class, 'pdfKeuangan'])->name('admin.laporan.pdf.keuangan');
+Route::get('/admin/laporan/excel/sampah', [LaporanController::class, 'excelSampah'])->name('admin.laporan.excel.sampah');
+Route::get('/admin/laporan/pdf/sampah', [LaporanController::class, 'pdfSampah'])->name('admin.laporan.pdf.sampah');
+Route::get('/admin/laporan/excel/nasabah', [LaporanController::class, 'excelNasabah'])->name('admin.laporan.excel.nasabah');
+Route::get('/admin/laporan/pdf/nasabah', [LaporanController::class, 'pdfNasabah'])->name('admin.laporan.pdf.nasabah');
 
 // Admin pengaturan routes
 Route::get('/admin/pengaturan', [PengaturanAdminController::class, 'index'])->name('admin.pengaturan');

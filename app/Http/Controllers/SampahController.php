@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Sampah;
 
 class SampahController extends Controller
 {
@@ -21,6 +22,7 @@ class SampahController extends Controller
                 // CSRF validation
                 if (hash_equals(session('_token', ''), $request->input('_token', ''))) {
                     // Soft delete: mark as nonaktif
+                    Sampah::where('id_jenis_sampah', $id)->update(['status' => 'nonaktif']);
                     $flash = 'Data sampah berhasil dihapus';
                     $flashType = 'success';
                 } else {
@@ -38,44 +40,10 @@ class SampahController extends Controller
             session()->forget('flash_type');
         }
 
-        // Dummy data for waste types
-        $sampahList = [
-            [
-                'id_jenis' => 1,
-                'nama_jenis' => 'Plastik',
-                'harga_per_kg' => 1500,
-                'stok_kg' => 250.5,
-                'status' => 'aktif',
-            ],
-            [
-                'id_jenis' => 2,
-                'nama_jenis' => 'Kertas',
-                'harga_per_kg' => 800,
-                'stok_kg' => 180.0,
-                'status' => 'aktif',
-            ],
-            [
-                'id_jenis' => 3,
-                'nama_jenis' => 'Kaca',
-                'harga_per_kg' => 2000,
-                'stok_kg' => 3.5,
-                'status' => 'aktif',
-            ],
-            [
-                'id_jenis' => 4,
-                'nama_jenis' => 'Logam',
-                'harga_per_kg' => 5000,
-                'stok_kg' => 45.0,
-                'status' => 'aktif',
-            ],
-            [
-                'id_jenis' => 5,
-                'nama_jenis' => 'Organik',
-                'harga_per_kg' => 300,
-                'stok_kg' => 500.0,
-                'status' => 'aktif',
-            ],
-        ];
+        // Get waste types from database
+        $sampahList = Sampah::where('status', 'aktif')
+            ->get(['id_jenis_sampah as id_jenis', 'nama_jenis', 'harga_per_kg', 'stok as stok_kg', 'status'])
+            ->toArray();
 
         return view('admin.daftar_sampah', compact(
             'activePage',
