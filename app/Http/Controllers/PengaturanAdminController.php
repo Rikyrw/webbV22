@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\AdminUser;
+use Illuminate\Support\Facades\Hash;
 
 class PengaturanAdminController extends Controller
 {
@@ -16,39 +18,19 @@ class PengaturanAdminController extends Controller
         $activePage = 'pengaturan';
         $pageTitle = 'Pengaturan Admin';
         
-        // Dummy admin data (in real app, fetch from database/Supabase)
-        $admins = [
-            [
-                'id_admin' => 1,
-                'nama_lengkap' => 'Rizky Saputra',
-                'email' => 'rizky@mail.com',
-                'role' => 'superadmin',
-                'username' => 'rizky',
-                'status' => 'aktif',
-                'no_hp' => '081234567890',
-                'alamat' => 'Jl. Merdeka No. 1, Jakarta'
-            ],
-            [
-                'id_admin' => 2,
-                'nama_lengkap' => 'Dewi Lestari',
-                'email' => 'dewi@mail.com',
-                'role' => 'admin',
-                'username' => 'dewi',
-                'status' => 'aktif',
-                'no_hp' => '081234567891',
-                'alamat' => 'Jl. Sudirman No. 5, Jakarta'
-            ],
-            [
-                'id_admin' => 3,
-                'nama_lengkap' => 'Bagas Pratama',
-                'email' => 'bagas@mail.com',
-                'role' => 'operator',
-                'username' => 'bagas',
-                'status' => 'aktif',
-                'no_hp' => '081234567892',
-                'alamat' => 'Jl. Gatot Subroto No. 10, Jakarta'
-            ],
-        ];
+        // Get admin data from database
+        $admins = AdminUser::select(
+            'id_admin',
+            'nama_lengkap',
+            'email',
+            'role',
+            'user_name as username',
+            'status',
+            'no_hp',
+            'alamat'
+        )
+        ->get()
+        ->toArray();
         
         return view('admin.pengaturan_admin', compact(
             'activePage',
@@ -69,16 +51,27 @@ class PengaturanAdminController extends Controller
         if ($action === 'add') {
             // Create new admin
             $validated = $request->validate([
-                'username' => 'required|string',
+                'username' => 'required|string|unique:admin,user_name',
                 'nama_lengkap' => 'required|string',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:admin,email',
                 'password' => 'required|string|min:6',
                 'role' => 'required|in:operator,admin,superadmin',
                 'no_hp' => 'nullable|string',
                 'alamat' => 'nullable|string',
             ]);
             
-            // In real app: Create in database/Supabase
+            // Create in database
+            AdminUser::create([
+                'user_name' => $validated['username'],
+                'nama_lengkap' => $validated['nama_lengkap'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => $validated['role'],
+                'status' => 'aktif',
+                'no_hp' => $validated['no_hp'] ?? null,
+                'alamat' => $validated['alamat'] ?? null,
+            ]);
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Admin berhasil ditambahkan'
@@ -87,7 +80,7 @@ class PengaturanAdminController extends Controller
         elseif ($action === 'edit') {
             // Update admin
             $validated = $request->validate([
-                'id_admin' => 'required|integer',
+                'id_admin' => 'required|integer|exists:admin,id_admin',
                 'username' => 'required|string',
                 'nama_lengkap' => 'required|string',
                 'email' => 'required|email',
@@ -98,7 +91,24 @@ class PengaturanAdminController extends Controller
                 'alamat' => 'nullable|string',
             ]);
             
-            // In real app: Update in database/Supabase
+            // Update in database
+            $admin = AdminUser::find($validated['id_admin']);
+            if ($admin) {
+                $admin->update([
+                    'user_name' => $validated['username'],
+                    'nama_lengkap' => $validated['nama_lengkap'],
+                    'email' => $validated['email'],
+                    'role' => $validated['role'],
+                    'status' => $validated['status'],
+                    'no_hp' => $validated['no_hp'] ?? null,
+                    'alamat' => $validated['alamat'] ?? null,
+                ]);
+                
+                if ($validated['password']) {
+                    $admin->update(['password' => Hash::make($validated['password'])]);
+                }
+            }
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Admin berhasil diupdate'
@@ -107,8 +117,8 @@ class PengaturanAdminController extends Controller
         elseif ($action === 'delete') {
             // Delete admin
             $id = $request->input('id_admin');
+            AdminUser::find($id)?->delete();
             
-            // In real app: Delete from database/Supabase
             return response()->json([
                 'status' => 'success',
                 'message' => 'Admin berhasil dihapus'

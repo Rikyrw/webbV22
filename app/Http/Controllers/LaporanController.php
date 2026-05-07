@@ -72,4 +72,46 @@ class LaporanController extends Controller
             'topNasabah'
         ));
     }
+
+    public function excelKeuangan(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement Excel export for financial data
+        return response()->json(['message' => 'Excel export for keuangan - period: ' . $period]);
+    }
+
+    public function pdfKeuangan(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement PDF export for financial data
+        return response()->json(['message' => 'PDF export for keuangan - period: ' . $period]);
+    }
+
+    public function excelSampah(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement Excel export for waste data
+        return response()->json(['message' => 'Excel export for sampah - period: ' . $period]);
+    }
+
+    public function pdfSampah(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement PDF export for waste data
+        return response()->json(['message' => 'PDF export for sampah - period: ' . $period]);
+    }
+
+    public function excelNasabah(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement Excel export for nasabah data
+        return response()->json(['message' => 'Excel export for nasabah - period: ' . $period]);
+    }
+
+    public function pdfNasabah(Request $request)
+    {
+        $period = $request->get('periode', 'month');
+        // TODO: Implement PDF export for nasabah data
+        return response()->json(['message' => 'PDF export for nasabah - period: ' . $period]);
+    }
 }
